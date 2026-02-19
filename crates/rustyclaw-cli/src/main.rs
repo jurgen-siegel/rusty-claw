@@ -5,6 +5,8 @@ mod pairing_cmd;
 mod messaging;
 mod setup;
 mod viz_server;
+mod doctor;
+mod cooldown_cmd;
 
 use std::env;
 use std::path::PathBuf;
@@ -73,6 +75,13 @@ enum Commands {
     },
     /// Run the interactive setup wizard
     Setup,
+    /// Check prerequisites and configuration
+    Doctor,
+    /// Manage model cooldowns
+    Cooldown {
+        #[command(subcommand)]
+        command: CooldownCommands,
+    },
     /// Set the default provider
     Provider {
         /// Provider name (anthropic, openai, opencode)
@@ -153,6 +162,17 @@ enum TeamCommands {
 }
 
 #[derive(Subcommand)]
+enum CooldownCommands {
+    /// Show all model cooldowns
+    Show,
+    /// Reset cooldowns (all, or for a specific model)
+    Reset {
+        /// Model key to reset (e.g. "anthropic:opus" or "opus"). Resets all if omitted.
+        model: Option<String>,
+    },
+}
+
+#[derive(Subcommand)]
 enum PairingCommands {
     /// List pending pairing requests
     Pending,
@@ -177,7 +197,7 @@ enum PairingCommands {
 ///   1. RUSTYCLAW_VIZ_DIR env var
 ///   2. Alongside the binary: <binary_dir>/viz-dist/
 ///   3. In the source tree: <binary_dir>/../../crates/rustyclaw-viz/dist/
-fn find_viz_dist_dir() -> Option<String> {
+pub(crate) fn find_viz_dist_dir() -> Option<String> {
     if let Ok(dir) = env::var("RUSTYCLAW_VIZ_DIR") {
         let p = PathBuf::from(&dir);
         if p.join("index.html").exists() {
@@ -233,6 +253,11 @@ fn main() -> Result<()> {
         Some(Commands::Status) => daemon::status(&paths),
         Some(Commands::Attach) => daemon::attach(),
         Some(Commands::Setup) => setup::run_setup(&paths),
+        Some(Commands::Doctor) => doctor::run_doctor(&paths),
+        Some(Commands::Cooldown { command }) => match command {
+            CooldownCommands::Show => cooldown_cmd::show_cooldowns(&paths),
+            CooldownCommands::Reset { model } => cooldown_cmd::reset_cooldowns(&paths, model.as_deref()),
+        },
         Some(Commands::Send { message }) => {
             let msg = message.join(" ");
             messaging::send_message(&msg, &paths)

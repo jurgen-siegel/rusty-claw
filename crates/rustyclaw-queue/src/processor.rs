@@ -380,7 +380,7 @@ async fn process_message_inner(
         &paths.events_dir,
     );
 
-    let cooldowns_file = paths.script_dir.join("cooldowns.json");
+    let cooldowns_file = paths.rustyclaw_home.join("cooldowns.json");
     let response = match invoke_agent_with_failover(
         &agent,
         &agent_id,

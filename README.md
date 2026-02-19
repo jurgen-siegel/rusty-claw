@@ -88,9 +88,13 @@ rustyclaw send <message>         Send a message to the queue
 rustyclaw logs [target]          View logs (queue, discord, telegram, heartbeat, all)
 rustyclaw reset <agent_ids>      Reset agent conversation(s)
 rustyclaw setup                  Run the interactive setup wizard
+rustyclaw doctor                 Check prerequisites and configuration
 rustyclaw provider [name]        Set/show default provider
 rustyclaw model [name]           Set/show default model
 rustyclaw visualize [--port]     Open the browser-based visualizer
+
+rustyclaw cooldown show          Show model cooldown status
+rustyclaw cooldown reset [model] Reset cooldowns (all or specific model)
 
 rustyclaw agent list             List all agents
 rustyclaw agent add              Add a new agent interactively
