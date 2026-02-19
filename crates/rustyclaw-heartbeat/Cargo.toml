@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 description = "Heartbeat cron binary for Rusty Claw"
 
+[lib]
+name = "rustyclaw_heartbeat"
+path = "src/lib.rs"
+
 [[bin]]
 name = "rustyclaw-heartbeat"
 path = "src/main.rs"

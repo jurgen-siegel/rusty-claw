@@ -11,7 +11,6 @@ use rustyclaw_core::config::Paths;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Determine script_dir (the rusty-claw installation root)
     let script_dir = env::var("RUSTYCLAW_SCRIPT_DIR")
         .map(PathBuf::from)
         .unwrap_or_else(|_| {
@@ -22,10 +21,5 @@ async fn main() -> Result<()> {
         });
 
     let paths = Arc::new(Paths::resolve(&script_dir));
-
-    println!("Rusty Claw Queue Processor");
-    println!("  Home: {}", paths.rustyclaw_home.display());
-    println!("  Incoming: {}", paths.queue_incoming.display());
-
-    processor::run_queue_processor(paths).await
+    rustyclaw_queue::run(paths).await
 }

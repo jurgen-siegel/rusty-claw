@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 description = "Queue processor binary for Rusty Claw"
 
+[lib]
+name = "rustyclaw_queue"
+path = "src/lib.rs"
+
 [[bin]]
 name = "rustyclaw-queue"
 path = "src/main.rs"

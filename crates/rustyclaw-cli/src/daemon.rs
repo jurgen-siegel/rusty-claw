@@ -50,22 +50,15 @@ pub fn start(paths: &Paths) -> Result<()> {
         .cloned()
         .unwrap_or_default();
 
-    // Resolve binary paths — look for binaries next to this executable
-    let self_dir = std::env::current_exe()
-        .ok()
-        .and_then(|p| p.parent().map(|p| p.to_path_buf()))
-        .unwrap_or_else(|| std::path::PathBuf::from("."));
-
-    let queue_bin = self_dir.join("rustyclaw-queue");
-    let heartbeat_bin = self_dir.join("rustyclaw-heartbeat");
-    let discord_bin = self_dir.join("rustyclaw-discord");
-    let telegram_bin = self_dir.join("rustyclaw-telegram");
+    // Resolve the rustyclaw binary path (all components run via subcommands)
+    let self_bin = std::env::current_exe()
+        .unwrap_or_else(|_| std::path::PathBuf::from("rustyclaw"));
 
     // Create tmux session with first pane (queue processor)
     let queue_cmd = format!(
-        "RUSTYCLAW_HOME={} {}",
+        "RUSTYCLAW_HOME={} {} run queue",
         paths.rustyclaw_home.display(),
-        queue_bin.display()
+        self_bin.display()
     );
     let status = Command::new("tmux")
         .args([
@@ -100,27 +93,18 @@ pub fn start(paths: &Paths) -> Result<()> {
     // Split for channel clients
     let mut pane_index = 1;
     for channel in &enabled_channels {
-        let (bin, token_env) = match channel.as_str() {
-            "discord" => (&discord_bin, format!("DISCORD_BOT_TOKEN={}", discord_token)),
-            "telegram" => (&telegram_bin, format!("TELOXIDE_TOKEN={}", telegram_token)),
+        let token_env = match channel.as_str() {
+            "discord" => format!("DISCORD_BOT_TOKEN={}", discord_token),
+            "telegram" => format!("TELOXIDE_TOKEN={}", telegram_token),
             _ => continue,
         };
 
-        if !bin.exists() {
-            println!(
-                "{} {} binary not found at {}",
-                "Warning:".yellow(),
-                channel,
-                bin.display()
-            );
-            continue;
-        }
-
         let chan_cmd = format!(
-            "{} RUSTYCLAW_HOME={} {}",
+            "{} RUSTYCLAW_HOME={} {} run {}",
             token_env,
             paths.rustyclaw_home.display(),
-            bin.display()
+            self_bin.display(),
+            channel
         );
         Command::new("tmux")
             .args([
@@ -135,11 +119,11 @@ pub fn start(paths: &Paths) -> Result<()> {
     }
 
     // Split for heartbeat
-    if heartbeat_bin.exists() {
+    {
         let heartbeat_cmd = format!(
-            "RUSTYCLAW_HOME={} {}",
+            "RUSTYCLAW_HOME={} {} run heartbeat",
             paths.rustyclaw_home.display(),
-            heartbeat_bin.display()
+            self_bin.display()
         );
         Command::new("tmux")
             .args([
@@ -216,16 +200,16 @@ pub fn stop(paths: &Paths) -> Result<()> {
 
     // Kill any lingering processes
     let _ = Command::new("pkill")
-        .args(["-f", "rustyclaw-queue"])
+        .args(["-f", "rustyclaw run queue"])
         .status();
     let _ = Command::new("pkill")
-        .args(["-f", "rustyclaw-discord"])
+        .args(["-f", "rustyclaw run discord"])
         .status();
     let _ = Command::new("pkill")
-        .args(["-f", "rustyclaw-telegram"])
+        .args(["-f", "rustyclaw run telegram"])
         .status();
     let _ = Command::new("pkill")
-        .args(["-f", "rustyclaw-heartbeat"])
+        .args(["-f", "rustyclaw run heartbeat"])
         .status();
 
     let _ = paths;

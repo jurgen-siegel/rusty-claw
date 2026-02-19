@@ -8,6 +8,7 @@ mod viz_server;
 
 use std::env;
 use std::path::PathBuf;
+use std::sync::Arc;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
@@ -85,6 +86,20 @@ enum Commands {
         /// Model name or ID
         name: Option<String>,
     },
+    /// Internal: run a daemon component (used by 'rustyclaw start')
+    #[command(hide = true)]
+    Run {
+        #[command(subcommand)]
+        component: RunComponent,
+    },
+}
+
+#[derive(Subcommand)]
+enum RunComponent {
+    Queue,
+    Heartbeat,
+    Discord,
+    Telegram,
 }
 
 #[derive(Subcommand)]
@@ -253,6 +268,18 @@ fn main() -> Result<()> {
         }
         Some(Commands::Provider { name, model }) => agents::set_provider(name.as_deref(), model.as_deref(), &paths),
         Some(Commands::Model { name }) => agents::set_model(name.as_deref(), &paths),
+        Some(Commands::Run { component }) => {
+            let rt = tokio::runtime::Runtime::new()?;
+            rt.block_on(async {
+                let paths_arc = Arc::new(paths);
+                match component {
+                    RunComponent::Queue => rustyclaw_queue::run(paths_arc).await,
+                    RunComponent::Heartbeat => rustyclaw_heartbeat::run((*paths_arc).clone()).await,
+                    RunComponent::Discord => rustyclaw_discord::run(paths_arc).await,
+                    RunComponent::Telegram => rustyclaw_telegram::run(paths_arc).await,
+                }
+            })
+        }
         None => {
             daemon::status(&paths)?;
             Ok(())

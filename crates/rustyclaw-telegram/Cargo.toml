@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 description = "Telegram channel client for Rusty Claw"
 
+[lib]
+name = "rustyclaw_telegram"
+path = "src/lib.rs"
+
 [[bin]]
 name = "rustyclaw-telegram"
 path = "src/main.rs"
