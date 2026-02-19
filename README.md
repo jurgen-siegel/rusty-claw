@@ -16,7 +16,7 @@ A multi-agent AI orchestration system written in Rust. Run multiple AI coding ag
 ## Prerequisites
 
 - **Rust** (stable toolchain) — [rustup.rs](https://rustup.rs)
-- **tmux** — required for the daemon
+- **tmux** — required for the daemon (`brew install tmux` on macOS, `sudo apt install tmux` on Ubuntu/Debian)
 - At least one AI CLI tool:
   - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (`claude`) for Anthropic models
   - [Codex CLI](https://github.com/openai/codex) (`codex`) for OpenAI models
