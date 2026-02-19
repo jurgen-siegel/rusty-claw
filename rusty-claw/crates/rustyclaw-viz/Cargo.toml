@@ -1,0 +1,24 @@
+[package]
+name = "rustyclaw-viz"
+version = "0.1.0"
+edition = "2021"
+description = "WASM browser visualizer for Rusty Claw team monitoring"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+yew = { version = "0.21", features = ["csr"] }
+web-sys = { version = "0.3", features = [
+    "Window", "Location", "UrlSearchParams",
+    "WebSocket", "MessageEvent", "Event", "CloseEvent",
+    "HtmlInputElement", "HtmlSelectElement",
+    "Headers", "SubmitEvent",
+] }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+gloo-net = { version = "0.6", features = ["http"] }
+gloo-timers = "0.3"
+js-sys = "0.3"

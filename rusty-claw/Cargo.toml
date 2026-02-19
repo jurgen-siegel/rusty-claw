@@ -1,0 +1,50 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/rustyclaw-core",
+    "crates/rustyclaw-queue",
+    "crates/rustyclaw-discord",
+    "crates/rustyclaw-telegram",
+    "crates/rustyclaw-cli",
+    "crates/rustyclaw-heartbeat",
+    "crates/rustyclaw-viz",
+]
+# Exclude rustyclaw-viz from default builds (WASM-only, built with trunk)
+default-members = [
+    "crates/rustyclaw-core",
+    "crates/rustyclaw-queue",
+    "crates/rustyclaw-discord",
+    "crates/rustyclaw-telegram",
+    "crates/rustyclaw-cli",
+    "crates/rustyclaw-heartbeat",
+]
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4", features = ["derive"] }
+regex = "1"
+rand = "0.8"
+reqwest = { version = "0.12", features = ["rustls-tls"] }
+notify = "7"
+once_cell = "1"
+directories = "5"
+dialoguer = "0.11"
+colored = "2"
+serenity = { version = "0.12", features = ["client", "gateway", "model"] }
+teloxide = { version = "0.13", features = ["macros"] }
+axum = { version = "0.8", features = ["ws"] }
+tower-http = { version = "0.6", features = ["fs", "cors"] }
+async-trait = "0.1"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

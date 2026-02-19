@@ -1,0 +1,27 @@
+[package]
+name = "rustyclaw-cli"
+version = "0.1.0"
+edition = "2021"
+description = "CLI binary for Rusty Claw (replaces rustyclaw.sh)"
+
+[[bin]]
+name = "rustyclaw"
+path = "src/main.rs"
+
+[dependencies]
+rustyclaw-core = { path = "../rustyclaw-core" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+clap = { workspace = true }
+dialoguer = { workspace = true }
+colored = { workspace = true }
+reqwest = { workspace = true }
+chrono = { workspace = true }
+rand = { workspace = true }
+axum = { workspace = true }
+tower-http = { workspace = true }
+notify = { workspace = true }

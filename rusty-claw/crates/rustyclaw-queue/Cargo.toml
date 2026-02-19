@@ -1,0 +1,25 @@
+[package]
+name = "rustyclaw-queue"
+version = "0.1.0"
+edition = "2021"
+description = "Queue processor binary for Rusty Claw"
+
+[[bin]]
+name = "rustyclaw-queue"
+path = "src/main.rs"
+
+[dependencies]
+rustyclaw-core = { path = "../rustyclaw-core" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+regex = { workspace = true }
+notify = { workspace = true }
+chrono = { workspace = true }
+rand = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"

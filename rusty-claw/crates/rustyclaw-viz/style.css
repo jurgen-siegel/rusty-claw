@@ -1,0 +1,1314 @@
+/* ─── Rusty Claw Team Visualizer — Modern Dashboard Theme ────────────── */
+
+:root {
+    --bg-base: #08090d;
+    --bg-surface: #0f1117;
+    --bg-card: rgba(17, 19, 28, 0.7);
+    --bg-card-hover: rgba(24, 27, 40, 0.8);
+    --bg-elevated: rgba(30, 34, 50, 0.5);
+
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-default: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.15);
+
+    --text-primary: #eaedf3;
+    --text-secondary: #8b8fa8;
+    --text-tertiary: #555770;
+    --text-disabled: #3a3d52;
+
+    --accent-cyan: #22d3ee;
+    --accent-cyan-dim: rgba(34, 211, 238, 0.15);
+    --accent-green: #34d399;
+    --accent-green-dim: rgba(52, 211, 153, 0.15);
+    --accent-yellow: #fbbf24;
+    --accent-yellow-dim: rgba(251, 191, 36, 0.15);
+    --accent-red: #f87171;
+    --accent-red-dim: rgba(248, 113, 113, 0.15);
+    --accent-magenta: #c084fc;
+    --accent-magenta-dim: rgba(192, 132, 252, 0.15);
+    --accent-blue: #60a5fa;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-glow-cyan: 0 0 20px rgba(34, 211, 238, 0.12), 0 0 40px rgba(34, 211, 238, 0.06);
+    --shadow-glow-green: 0 0 20px rgba(52, 211, 153, 0.12), 0 0 40px rgba(52, 211, 153, 0.06);
+    --shadow-glow-red: 0 0 20px rgba(248, 113, 113, 0.12), 0 0 40px rgba(248, 113, 113, 0.06);
+
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle ambient gradient */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(34, 211, 238, 0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 20%, rgba(192, 132, 252, 0.03) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 20% 80%, rgba(52, 211, 153, 0.02) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.25rem 2rem 5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-strong);
+}
+
+/* ─── Header ─────────────────────────────────────────────────────── */
+
+.header {
+    margin-bottom: 1.75rem;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 0;
+}
+
+.header-icon {
+    font-size: 1.5em;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header h1 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.sep {
+    color: var(--text-disabled);
+    margin: 0 0.15rem;
+    font-weight: 300;
+    user-select: none;
+}
+
+.header-team {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+.header-team-name {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.header-all {
+    color: var(--accent-yellow);
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.header-uptime {
+    color: var(--text-tertiary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.85em;
+}
+
+.status-connected {
+    color: var(--accent-green);
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.status-disconnected {
+    color: var(--accent-red);
+    font-size: 0.85em;
+    font-weight: 500;
+    animation: pulse-fade 2s ease-in-out infinite;
+}
+
+.divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-default) 20%, var(--border-default) 80%, transparent);
+    margin: 0.5rem 0;
+}
+
+/* ─── Agent Cards ────────────────────────────────────────────────── */
+
+.agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.agent-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border-subtle);
+    transition: background var(--transition-normal);
+}
+
+.agent-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-default);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card);
+}
+
+/* Status-specific card styling */
+.agent-card.status-active {
+    border-color: rgba(34, 211, 238, 0.25);
+    box-shadow: var(--shadow-glow-cyan);
+}
+.agent-card.status-active::before {
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+
+.agent-card.status-done {
+    border-color: rgba(52, 211, 153, 0.2);
+}
+.agent-card.status-done::before {
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+}
+
+.agent-card.status-error {
+    border-color: rgba(248, 113, 113, 0.25);
+    box-shadow: var(--shadow-glow-red);
+}
+.agent-card.status-error::before {
+    background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+}
+
+.agent-card.status-waiting {
+    border-color: rgba(251, 191, 36, 0.2);
+}
+.agent-card.status-waiting::before {
+    background: linear-gradient(90deg, transparent, var(--accent-yellow), transparent);
+}
+
+.agent-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-icon {
+    font-size: 0.75em;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.status-icon.idle {
+    color: var(--text-tertiary);
+    background: rgba(85, 87, 112, 0.15);
+}
+.status-icon.active {
+    color: var(--accent-cyan);
+    background: var(--accent-cyan-dim);
+    animation: pulse-glow-cyan 2s ease-in-out infinite;
+}
+.status-icon.done {
+    color: var(--accent-green);
+    background: var(--accent-green-dim);
+}
+.status-icon.error {
+    color: var(--accent-red);
+    background: var(--accent-red-dim);
+}
+.status-icon.waiting {
+    color: var(--accent-yellow);
+    background: var(--accent-yellow-dim);
+    animation: pulse-glow-yellow 2s ease-in-out infinite;
+}
+
+.agent-id {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.95em;
+    letter-spacing: -0.01em;
+}
+
+.leader-star {
+    color: var(--accent-yellow);
+    font-size: 0.85em;
+    margin-left: auto;
+}
+
+.agent-name {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    margin-bottom: 0.25rem;
+}
+
+.agent-model {
+    display: inline-block;
+    color: var(--text-tertiary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.75em;
+    padding: 2px 8px;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 0.5rem;
+}
+
+.agent-activity {
+    font-size: 0.85em;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.agent-activity .processing {
+    color: var(--accent-cyan);
+    font-weight: 500;
+}
+
+.agent-activity .done {
+    color: var(--accent-green);
+    font-weight: 500;
+}
+
+.agent-activity .error {
+    color: var(--accent-red);
+    font-weight: 500;
+}
+
+.agent-activity .waiting {
+    color: var(--accent-yellow);
+    font-weight: 500;
+}
+
+.agent-activity .idle {
+    color: var(--text-tertiary);
+}
+
+/* ─── Chain Flow ─────────────────────────────────────────────────── */
+
+.chain-flow {
+    margin: 1.25rem 0;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.chain-flow h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
+.chain-arrows {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.chain-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.chain-from {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+.chain-arrow {
+    color: var(--accent-yellow);
+    font-size: 1.1em;
+}
+
+.chain-to {
+    color: var(--accent-magenta);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+.chain-sep {
+    color: var(--text-disabled);
+    margin: 0 0.25rem;
+}
+
+/* ─── Teams Legend ────────────────────────────────────────────────── */
+
+.teams-legend {
+    margin: 1.25rem 0;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.teams-legend h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
+.team-entry {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85em;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+}
+
+.team-entry:hover {
+    background: var(--bg-elevated);
+}
+
+.team-id {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.team-name {
+    color: var(--text-secondary);
+}
+
+.team-agents {
+    color: var(--text-tertiary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+.team-leader {
+    color: var(--accent-yellow);
+    font-size: 0.9em;
+}
+
+/* ─── Activity Log ───────────────────────────────────────────────── */
+
+.activity-log {
+    margin-top: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+}
+
+.activity-log h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.25rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.activity-log .divider {
+    margin: 0;
+}
+
+.log-entries {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 0.25rem 0;
+}
+
+.empty-log {
+    color: var(--text-tertiary);
+    font-size: 0.85em;
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+}
+
+.log-entry {
+    font-size: 0.82em;
+    line-height: 1.7;
+    display: flex;
+    gap: 0;
+    padding: 0.15rem 1.25rem;
+    transition: background var(--transition-fast);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    animation: slide-in 0.2s ease-out;
+}
+
+.log-entry:hover {
+    background: var(--bg-elevated);
+}
+
+.log-time {
+    color: var(--text-disabled);
+    min-width: 6em;
+    flex-shrink: 0;
+}
+
+.log-icon {
+    min-width: 2em;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.log-text {
+    color: var(--text-secondary);
+}
+
+.log-entry.log-green .log-icon,
+.log-entry.log-green .log-text { color: var(--accent-green); }
+.log-entry.log-cyan .log-icon,
+.log-entry.log-cyan .log-text { color: var(--accent-cyan); }
+.log-entry.log-yellow .log-icon,
+.log-entry.log-yellow .log-text { color: var(--accent-yellow); }
+.log-entry.log-magenta .log-icon,
+.log-entry.log-magenta .log-text { color: var(--accent-magenta); }
+.log-entry.log-red .log-icon,
+.log-entry.log-red .log-text { color: var(--accent-red); }
+.log-entry.log-white .log-icon,
+.log-entry.log-white .log-text { color: var(--text-primary); }
+
+/* ─── Status Bar ─────────────────────────────────────────────────── */
+
+.status-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-subtle);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 100;
+}
+
+.status-bar .divider {
+    display: none;
+}
+
+.status-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 2rem;
+    font-size: 0.8em;
+    flex-wrap: wrap;
+}
+
+.processor-online {
+    color: var(--accent-green);
+    font-weight: 500;
+}
+
+.processor-idle {
+    color: var(--accent-yellow);
+    font-weight: 500;
+}
+
+.queue-busy {
+    color: var(--accent-yellow);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.queue-empty {
+    color: var(--accent-green);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.processed-count {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.ws-connected {
+    color: var(--accent-green);
+    font-weight: 500;
+}
+
+.ws-disconnected {
+    color: var(--accent-red);
+    font-weight: 500;
+    animation: pulse-fade 2s ease-in-out infinite;
+}
+
+/* ─── No teams message ───────────────────────────────────────────── */
+
+.no-teams {
+    margin: 4rem 0;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-default);
+    border-radius: var(--radius-lg);
+}
+
+.no-teams .warning {
+    color: var(--accent-yellow);
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.no-teams .hint {
+    color: var(--text-tertiary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+/* ─── Queue Panel ───────────────────────────────────────────────── */
+
+.queue-panel {
+    margin: 1.25rem 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+}
+
+.queue-panel h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.25rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.queue-panel .divider {
+    margin: 0;
+}
+
+.queue-entries {
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.queue-entry {
+    padding: 0.5rem 1.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background var(--transition-fast);
+}
+
+.queue-entry:last-child {
+    border-bottom: none;
+}
+
+.queue-entry:hover {
+    background: var(--bg-elevated);
+}
+
+.queue-entry-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.82em;
+}
+
+.queue-badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.queue-badge.queue-status-incoming {
+    color: var(--accent-yellow);
+    background: var(--accent-yellow-dim);
+}
+
+.queue-badge.queue-status-processing {
+    color: var(--accent-cyan);
+    background: var(--accent-cyan-dim);
+}
+
+.queue-sender {
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+.queue-agent {
+    color: var(--accent-magenta);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+    margin-left: auto;
+}
+
+.queue-preview {
+    color: var(--text-tertiary);
+    font-size: 0.82em;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ─── Send Form ─────────────────────────────────────────────────── */
+
+.send-form-panel {
+    margin-bottom: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+}
+
+.send-form-panel h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.25rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.send-form-panel .divider {
+    margin: 0;
+}
+
+.send-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    flex-wrap: wrap;
+}
+
+.send-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9em;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.send-input:focus {
+    border-color: var(--accent-cyan);
+}
+
+.send-input::placeholder {
+    color: var(--text-disabled);
+}
+
+.send-agent-select {
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.85em;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.send-agent-select:focus {
+    border-color: var(--accent-cyan);
+}
+
+.send-agent-select option {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+.send-button {
+    padding: 0.5rem 1.25rem;
+    background: var(--accent-cyan-dim);
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: var(--radius-sm);
+    color: var(--accent-cyan);
+    font-weight: 600;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.send-button:hover:not(:disabled) {
+    background: rgba(34, 211, 238, 0.25);
+    border-color: var(--accent-cyan);
+}
+
+.send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.send-feedback {
+    font-size: 0.82em;
+    color: var(--accent-green);
+    font-weight: 500;
+    animation: slide-in 0.2s ease-out;
+}
+
+/* ─── Animations ─────────────────────────────────────────────────── */
+
+@keyframes pulse-glow-cyan {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+    50% { box-shadow: 0 0 8px 2px rgba(34, 211, 238, 0.3); }
+}
+
+@keyframes pulse-glow-yellow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+    50% { box-shadow: 0 0 8px 2px rgba(251, 191, 36, 0.3); }
+}
+
+@keyframes pulse-fade {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes slide-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .app {
+        padding: 1rem 1rem 4.5rem;
+    }
+
+    .agents-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 1rem;
+    }
+
+    .status-content {
+        padding: 0.5rem 1rem;
+        font-size: 0.75em;
+    }
+}
+
+@media (min-width: 1024px) {
+    .agents-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+}
+
+/* ─── Tab Navigation ─────────────────────────────────────────────── */
+
+.tab-bar {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.tab-button {
+    padding: 0.6rem 1.25rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-tertiary);
+    font-family: inherit;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-button:hover {
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+}
+
+.tab-button.tab-active {
+    color: var(--accent-cyan);
+    border-bottom-color: var(--accent-cyan);
+}
+
+.tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--accent-yellow);
+    border-radius: 9px;
+    font-size: 0.75em;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.tab-content {
+    min-height: 300px;
+}
+
+.queue-empty-hint {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-tertiary);
+    font-size: 0.9em;
+}
+
+/* ─── Settings Page ──────────────────────────────────────────────── */
+
+.settings-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.settings-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+}
+
+.settings-section h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.25rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.settings-section-body {
+    padding: 0.75rem 1.25rem 1rem;
+}
+
+.settings-subsection {
+    margin-top: 0.5rem;
+}
+
+.settings-subsection h4 {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 0.25rem;
+}
+
+.settings-field {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.3rem 0;
+    font-size: 0.85em;
+}
+
+.settings-field-label {
+    color: var(--text-tertiary);
+    min-width: 140px;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+.settings-field-value {
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+.settings-field-value.masked {
+    color: var(--text-disabled);
+}
+
+.settings-field-value.empty {
+    color: var(--text-disabled);
+    font-style: italic;
+}
+
+.settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82em;
+}
+
+.settings-table th {
+    text-align: left;
+    color: var(--text-tertiary);
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--border-default);
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.03em;
+}
+
+.settings-table td {
+    padding: 0.4rem 0.75rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.settings-table tr:last-child td {
+    border-bottom: none;
+}
+
+.settings-table tr:hover td {
+    background: var(--bg-elevated);
+}
+
+.settings-loading,
+.settings-error,
+.settings-empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-tertiary);
+}
+
+.settings-error {
+    color: var(--accent-red);
+}
+
+/* ─── Kanban Board ───────────────────────────────────────────────── */
+
+.kanban-board {
+    margin: 0;
+}
+
+.kanban-columns {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.kanban-column {
+    min-width: 220px;
+    max-width: 320px;
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+}
+
+.kanban-column-done {
+    border-color: rgba(52, 211, 153, 0.15);
+}
+
+.kanban-column-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+}
+
+.kanban-column-id {
+    font-weight: 600;
+    color: var(--accent-cyan);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+.kanban-column-done .kanban-column-id {
+    color: var(--accent-green);
+}
+
+.kanban-column-name {
+    color: var(--text-tertiary);
+    font-size: 0.82em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kanban-column-badge {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: var(--accent-cyan-dim);
+    color: var(--accent-cyan);
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.kanban-badge-done {
+    background: var(--accent-green-dim);
+    color: var(--accent-green);
+}
+
+.kanban-column-body {
+    padding: 0.5rem;
+    flex: 1;
+    min-height: 60px;
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.kanban-empty {
+    color: var(--text-disabled);
+    font-size: 0.82em;
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+}
+
+/* ── Kanban card ── */
+
+.kanban-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--text-disabled);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+    transition: all var(--transition-normal);
+    animation: slide-in 0.25s ease-out;
+}
+
+.kanban-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-default);
+}
+
+.kanban-status-queued {
+    border-left-color: var(--accent-yellow);
+}
+
+.kanban-status-active {
+    border-left-color: var(--accent-cyan);
+    animation: slide-in 0.25s ease-out, kanban-pulse-border 2s ease-in-out infinite;
+}
+
+.kanban-status-step-done {
+    border-left-color: var(--accent-green);
+}
+
+.kanban-status-done {
+    border-left-color: var(--accent-green);
+    transition: opacity 5s ease;
+}
+
+.kanban-card-fading {
+    opacity: 0.4;
+}
+
+/* Card status line */
+.kanban-card-status-line {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.78em;
+}
+
+.kanban-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--text-disabled);
+}
+
+.dot-queued { background: var(--accent-yellow); }
+.dot-active {
+    background: var(--accent-cyan);
+    animation: pulse-glow-cyan 2s ease-in-out infinite;
+}
+.dot-step-done { background: var(--accent-green); }
+.dot-done { background: var(--accent-green); }
+
+.kanban-status-text {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.kanban-card-chars {
+    margin-left: auto;
+    color: var(--text-disabled);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+/* Card preview */
+.kanban-card-preview {
+    color: var(--text-primary);
+    font-size: 0.82em;
+    line-height: 1.4;
+    margin-bottom: 0.35rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Card meta */
+.kanban-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75em;
+}
+
+.kanban-card-channel {
+    color: var(--accent-magenta);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.kanban-card-sender {
+    color: var(--text-tertiary);
+}
+
+.kanban-card-elapsed {
+    margin-left: auto;
+    color: var(--text-disabled);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Handoff trail */
+.kanban-card-trail {
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--accent-yellow);
+    font-size: 0.72em;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Pulse animation for active cards */
+@keyframes kanban-pulse-border {
+    0%, 100% { border-left-color: var(--accent-cyan); }
+    50% { border-left-color: rgba(34, 211, 238, 0.4); }
+}
+
+/* ── Kanban responsive ── */
+
+@media (max-width: 768px) {
+    .kanban-columns {
+        flex-direction: column;
+    }
+
+    .kanban-column {
+        min-width: unset;
+        max-width: unset;
+    }
+
+    .kanban-column-body {
+        max-height: 300px;
+    }
+}

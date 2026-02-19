@@ -1,0 +1,37 @@
+# Rust
+target/
+**/*.rs.bk
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+.env
+.env.*
+settings.json
+
+# Rusty Claw runtime
+logs/
+*.tmp
+
+# WASM build output
+rusty-claw/crates/rustyclaw-viz/dist/
+
+# Build artifacts
+rusty-claw/target/
+
+# Planning docs
+EXECUTION_PLAN.md
+
+# External / vendored source
+tinyclaw-main/
+
+# Claude Code
+.claude/
