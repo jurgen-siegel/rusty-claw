@@ -80,7 +80,7 @@ impl Reducible for AppState {
                     }
                 }
 
-                // Otherwise show all team agents, or all agents if no teams
+                // Otherwise show all agents (team members first, then the rest)
                 if agent_ids.is_empty() {
                     for team in settings.teams.values() {
                         for aid in &team.agents {
@@ -89,9 +89,12 @@ impl Reducible for AppState {
                             }
                         }
                     }
-                }
-                if agent_ids.is_empty() {
-                    agent_ids = settings.agents.keys().cloned().collect();
+                    // Add any agents not in a team
+                    for aid in settings.agents.keys() {
+                        if !agent_ids.contains(aid) {
+                            agent_ids.push(aid.clone());
+                        }
+                    }
                 }
 
                 let mut states = HashMap::new();
@@ -408,21 +411,21 @@ fn handle_event(s: &mut AppState, event: &VizEvent) {
             let aid = get_str("agentId");
             let now = js_sys::Date::now();
 
-            let card = if !message_id.is_empty() {
-                s.kanban_cards.iter_mut()
-                    .find(|c| c.id == message_id && c.status != KanbanCardStatus::Done)
+            // Find the card index first to avoid overlapping borrows
+            let card_idx = if !message_id.is_empty() {
+                s.kanban_cards.iter()
+                    .position(|c| c.id == message_id && c.status != KanbanCardStatus::Done)
             } else {
                 None
             };
-            let card = card.or_else(|| {
+            let card_idx = card_idx.or_else(|| {
                 if !aid.is_empty() {
-                    s.kanban_cards.iter_mut().rev()
-                        .find(|c| c.current_agent == aid && c.status != KanbanCardStatus::Done)
+                    s.kanban_cards.iter().rposition(|c| c.current_agent == aid && c.status != KanbanCardStatus::Done)
                 } else {
-                    s.kanban_cards.iter_mut().rev()
-                        .find(|c| c.status != KanbanCardStatus::Done)
+                    s.kanban_cards.iter().rposition(|c| c.status != KanbanCardStatus::Done)
                 }
             });
+            let card = card_idx.and_then(|i| s.kanban_cards.get_mut(i));
             if let Some(card) = card {
                 card.current_agent = String::new();
                 card.status = KanbanCardStatus::Done;

@@ -26,16 +26,17 @@ A multi-agent AI orchestration system written in Rust. Run multiple AI coding ag
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/rusty-claw.git
-cd rusty-claw/rusty-claw
+cd rusty-claw
 
-# Build all binaries
-cargo build --release
-
-# Add to your PATH (or symlink)
-export PATH="$PWD/target/release:$PATH"
+# Install all binaries to ~/.cargo/bin
+cargo install --path crates/rustyclaw-cli
+cargo install --path crates/rustyclaw-queue
+cargo install --path crates/rustyclaw-heartbeat
+cargo install --path crates/rustyclaw-discord
+cargo install --path crates/rustyclaw-telegram
 ```
 
-The build produces these binaries:
+This installs these binaries to `~/.cargo/bin/` (already in your PATH from rustup):
 - `rustyclaw` — main CLI
 - `rustyclaw-queue` — queue processor
 - `rustyclaw-discord` — Discord bot

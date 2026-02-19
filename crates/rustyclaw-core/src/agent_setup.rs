@@ -5,6 +5,25 @@ use anyhow::Result;
 
 use crate::types::{AgentConfig, TeamConfig};
 
+// Embedded templates — compiled into the binary so fresh installs work
+// without external template files on disk.
+const EMBEDDED_AGENTS_MD: &str = include_str!("../../../templates/AGENTS.md");
+const EMBEDDED_SOUL_MD: &str = include_str!("../../../templates/SOUL.md");
+const EMBEDDED_IDENTITY_MD: &str = include_str!("../../../templates/IDENTITY.md");
+const EMBEDDED_USER_MD: &str = include_str!("../../../templates/USER.md");
+const EMBEDDED_TOOLS_MD: &str = include_str!("../../../templates/TOOLS.md");
+const EMBEDDED_HEARTBEAT_MD: &str = include_str!("../../../templates/heartbeat.md");
+
+/// Write a template file: use the on-disk source if it exists, otherwise fall back to embedded content.
+fn write_template(target: &Path, source: &Path, embedded: &str) -> Result<()> {
+    if source.exists() {
+        std::fs::copy(source, target)?;
+    } else {
+        std::fs::write(target, embedded)?;
+    }
+    Ok(())
+}
+
 /// Recursively copy a directory and all its contents.
 pub fn copy_dir_sync(src: &Path, dest: &Path) -> Result<()> {
     std::fs::create_dir_all(dest)?;
@@ -33,32 +52,34 @@ pub fn ensure_agent_directory(agent_dir: &Path, script_dir: &Path) -> Result<()>
 
     std::fs::create_dir_all(agent_dir)?;
 
-    // Copy .claude directory
+    // Copy .claude directory (if on-disk template exists)
     let source_claude_dir = script_dir.join(".claude");
     let target_claude_dir = agent_dir.join(".claude");
     if source_claude_dir.exists() {
         copy_dir_sync(&source_claude_dir, &target_claude_dir)?;
     }
 
-    // Copy heartbeat.md
-    let source_heartbeat = script_dir.join("heartbeat.md");
-    let target_heartbeat = agent_dir.join("heartbeat.md");
-    if source_heartbeat.exists() {
-        std::fs::copy(&source_heartbeat, &target_heartbeat)?;
-    }
+    // Copy heartbeat.md (with embedded fallback)
+    write_template(
+        &agent_dir.join("heartbeat.md"),
+        &script_dir.join("heartbeat.md"),
+        EMBEDDED_HEARTBEAT_MD,
+    )?;
 
-    // Copy AGENTS.md
-    let source_agents = script_dir.join("AGENTS.md");
-    let target_agents = agent_dir.join("AGENTS.md");
-    if source_agents.exists() {
-        std::fs::copy(&source_agents, &target_agents)?;
-    }
+    // Copy AGENTS.md (with embedded fallback)
+    write_template(
+        &agent_dir.join("AGENTS.md"),
+        &script_dir.join("AGENTS.md"),
+        EMBEDDED_AGENTS_MD,
+    )?;
 
-    // Copy AGENTS.md as .claude/CLAUDE.md
-    if source_agents.exists() {
-        std::fs::create_dir_all(agent_dir.join(".claude"))?;
-        std::fs::copy(&source_agents, agent_dir.join(".claude/CLAUDE.md"))?;
-    }
+    // Copy AGENTS.md as .claude/CLAUDE.md (with embedded fallback)
+    std::fs::create_dir_all(agent_dir.join(".claude"))?;
+    write_template(
+        &agent_dir.join(".claude/CLAUDE.md"),
+        &script_dir.join("AGENTS.md"),
+        EMBEDDED_AGENTS_MD,
+    )?;
 
     // Symlink skills directory into .claude/skills
     // Prefer .agent/skills, fall back to .agents/skills
@@ -83,20 +104,25 @@ pub fn ensure_agent_directory(agent_dir: &Path, script_dir: &Path) -> Result<()>
         std::os::unix::fs::symlink(&source_skills, &target_agent_skills)?;
     }
 
-    // Create .rustyclaw directory and copy SOUL.md
+    // Create .rustyclaw directory and copy SOUL.md (with embedded fallback)
     let target_rustyclaw = agent_dir.join(".rustyclaw");
     std::fs::create_dir_all(&target_rustyclaw)?;
-    let source_soul = script_dir.join("SOUL.md");
-    if source_soul.exists() {
-        std::fs::copy(&source_soul, target_rustyclaw.join("SOUL.md"))?;
-    }
+    write_template(
+        &target_rustyclaw.join("SOUL.md"),
+        &script_dir.join("SOUL.md"),
+        EMBEDDED_SOUL_MD,
+    )?;
 
-    // Copy bootstrap files (IDENTITY.md, USER.md, TOOLS.md)
-    for filename in &["IDENTITY.md", "USER.md", "TOOLS.md"] {
-        let source = script_dir.join(filename);
+    // Copy bootstrap files with embedded fallbacks
+    let bootstrap_files: &[(&str, &str)] = &[
+        ("IDENTITY.md", EMBEDDED_IDENTITY_MD),
+        ("USER.md", EMBEDDED_USER_MD),
+        ("TOOLS.md", EMBEDDED_TOOLS_MD),
+    ];
+    for (filename, embedded) in bootstrap_files {
         let target = target_rustyclaw.join(filename);
-        if source.exists() && !target.exists() {
-            std::fs::copy(&source, &target)?;
+        if !target.exists() {
+            write_template(&target, &script_dir.join(filename), embedded)?;
         }
     }
 
