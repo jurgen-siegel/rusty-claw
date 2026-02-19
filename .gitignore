@@ -22,10 +22,7 @@ logs/
 *.tmp
 
 # WASM build output
-rusty-claw/crates/rustyclaw-viz/dist/
-
-# Build artifacts
-rusty-claw/target/
+crates/rustyclaw-viz/dist/
 
 # Planning docs
 EXECUTION_PLAN.md
