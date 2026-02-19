@@ -25,7 +25,7 @@ A multi-agent AI orchestration system written in Rust. Run multiple AI coding ag
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/rusty-claw.git
+git clone https://github.com/jurgen-siegel/rusty-claw.git
 cd rusty-claw
 cargo install --path crates/rustyclaw-cli
 ```
