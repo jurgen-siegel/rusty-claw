@@ -18,8 +18,29 @@ fn is_session_running() -> bool {
         .unwrap_or(false)
 }
 
+/// Check if tmux is installed
+fn ensure_tmux() -> Result<()> {
+    match Command::new("tmux").arg("-V").output() {
+        Ok(output) if output.status.success() => Ok(()),
+        _ => {
+            println!("{}", "tmux is required but not installed.".red().bold());
+            println!();
+            if cfg!(target_os = "macos") {
+                println!("  Install with: {}", "brew install tmux".green());
+            } else {
+                println!("  Install with: {}", "sudo apt install tmux".green());
+                println!("           or:  {}", "sudo dnf install tmux".green());
+            }
+            println!();
+            bail!("tmux not found");
+        }
+    }
+}
+
 /// Start the Rusty Claw daemon (tmux session with all components)
 pub fn start(paths: &Paths) -> Result<()> {
+    ensure_tmux()?;
+
     if is_session_running() {
         println!("{}", "Rusty Claw is already running.".yellow());
         println!("Use {} to see status, {} to restart.", "rustyclaw status".green(), "rustyclaw restart".green());
