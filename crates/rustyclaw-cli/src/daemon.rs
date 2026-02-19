@@ -1,6 +1,6 @@
 use std::process::Command;
 
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use colored::Colorize;
 
 use rustyclaw_core::config::{get_settings, Paths};
@@ -56,11 +56,11 @@ pub fn start(paths: &Paths) -> Result<()> {
     }
 
     // Ensure queue directories exist
-    paths.ensure_queue_dirs()?;
+    paths.ensure_queue_dirs().context("Failed to create queue directories")?;
 
     // Ensure logs directory
     if let Some(log_dir) = paths.log_file.parent() {
-        std::fs::create_dir_all(log_dir)?;
+        std::fs::create_dir_all(log_dir).context("Failed to create logs directory")?;
     }
 
     // Determine enabled channels
@@ -91,7 +91,8 @@ pub fn start(paths: &Paths) -> Result<()> {
             "rustyclaw",
             &queue_cmd,
         ])
-        .status()?;
+        .status()
+        .context("Failed to create tmux session")?;
 
     if !status.success() {
         bail!("Failed to create tmux session");
@@ -135,7 +136,8 @@ pub fn start(paths: &Paths) -> Result<()> {
                 "-v",
                 &chan_cmd,
             ])
-            .status()?;
+            .status()
+            .context(format!("Failed to create tmux pane for {}", channel))?;
         pane_index += 1;
     }
 
@@ -154,7 +156,8 @@ pub fn start(paths: &Paths) -> Result<()> {
                 "-v",
                 &heartbeat_cmd,
             ])
-            .status()?;
+            .status()
+            .context("Failed to create tmux pane for heartbeat")?;
         pane_index += 1;
     }
 
@@ -169,7 +172,8 @@ pub fn start(paths: &Paths) -> Result<()> {
             "-v",
             &log_cmd,
         ])
-        .status()?;
+        .status()
+        .context("Failed to create tmux pane for log tail")?;
 
     // Even out the pane layout
     Command::new("tmux")
@@ -179,7 +183,8 @@ pub fn start(paths: &Paths) -> Result<()> {
             &format!("{}:{}", SESSION_NAME, 0),
             "tiled",
         ])
-        .status()?;
+        .status()
+        .context("Failed to set tmux layout")?;
 
     // Select the first pane (queue processor)
     Command::new("tmux")
@@ -188,7 +193,8 @@ pub fn start(paths: &Paths) -> Result<()> {
             "-t",
             &format!("{}:{}.0", SESSION_NAME, 0),
         ])
-        .status()?;
+        .status()
+        .context("Failed to select tmux pane")?;
 
     println!("{}", "Rusty Claw daemon started!".green().bold());
     println!("  Queue processor:  {}", "running".green());
@@ -211,7 +217,8 @@ pub fn stop(paths: &Paths) -> Result<()> {
 
     let status = Command::new("tmux")
         .args(["kill-session", "-t", SESSION_NAME])
-        .status()?;
+        .status()
+        .context("Failed to kill tmux session")?;
 
     if status.success() {
         println!("{}", "Rusty Claw daemon stopped.".green());
